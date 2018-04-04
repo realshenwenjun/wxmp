@@ -5,6 +5,7 @@
 <ul class="topNav">
 	<li><a href="<%=path%>/wxcms/main?userId=${sessionScope.sysUser.id}">首页</a></li>
 	<li><a href="<%=path%>/wxcms/urltoken?userId=${sessionScope.sysUser.id}">微信接口管理</a></li>
+	<li><a href="<%=path%>/wxcms/urltoken?userId=${sessionScope.sysUser.id}">CMS管理</a></li>
   <!-- <li><a href="javascript:void(0)">商品</a></li>
 	<li><a href="javascript:void(0)">闲置</a></li>
 	<li><a href="javascript:void(0)">店铺</a></li>

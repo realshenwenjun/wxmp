@@ -43,6 +43,7 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 				break;
 			}
 		}
+		oauthFlag = true;
 		if(!oauthFlag){//如果不需要oauth认证
 			return true;
 		}

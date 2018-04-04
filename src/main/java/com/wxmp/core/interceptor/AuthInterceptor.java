@@ -19,9 +19,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	private final static Logger log= Logger.getLogger(AuthInterceptor.class);
 	
 	public String[] allowUrls;// 也可以注解
+	public String[] allowPatterns;//模糊匹配
 
 	public void setAllowUrls(String[] allowUrls) {
 		this.allowUrls = allowUrls;
+	}
+
+	public void setAllowPatterns(String[] allowPatterns) {
+		this.allowPatterns = allowPatterns;
 	}
 
 	@Override
@@ -29,10 +34,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			HttpServletResponse response, Object handler) throws Exception {
 		// HandlerMethod method = (HandlerMethod)handler;
 		// Auth auth = method.getMethod().getAnnotation(Auth.class);
+
 		String requestUrl = request.getRequestURI().replace(request.getContextPath(), "");
 		if (null != allowUrls && allowUrls.length >= 1)
 			for (String url : allowUrls) {
 				if (requestUrl.contains(".css") || requestUrl.contains(".js") || requestUrl.contains(".png") || requestUrl.contains(".jpg")||requestUrl.contains("/message") || requestUrl.equals(url)) {
+					return true;
+				}
+			}
+		if (null != allowPatterns && allowPatterns.length >= 1)
+			for (String url : allowPatterns) {
+				if (requestUrl.startsWith(url)) {
 					return true;
 				}
 			}

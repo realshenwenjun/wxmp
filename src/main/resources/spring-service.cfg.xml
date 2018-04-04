@@ -14,7 +14,7 @@
         -->
         <mvc:interceptors>
 			<mvc:interceptor>
-	        	<mvc:mapping path="/**/*.html"/>
+	        	<mvc:mapping path="/rent/*.html"/>
 	        	<bean class="com.wxmp.wxapi.interceptor.WxOAuth2Interceptor">
 	        		<property name="includes">
 	        			<list> 
