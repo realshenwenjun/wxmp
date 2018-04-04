@@ -26,6 +26,11 @@ public class ManagerUserCtrl extends BaseCtrl{
 
 		return mv;
 	}
+	@RequestMapping(value = "/bindWx.html")
+	public ModelAndView bind(HttpServletRequest request){
+		ModelAndView mv = new ModelAndView("rent/manager/user/bindWx");
 
+		return mv;
+	}
 	
 }
