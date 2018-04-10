@@ -27,11 +27,5 @@ public class ManagerUserCtrl extends BaseCtrl{
 		return mv;
 	}
 
-	@RequestMapping(value = "/regist.html")
-	public ModelAndView regist(HttpServletRequest request){
-		ModelAndView mv = new ModelAndView("rent/manager/user/weui");
-
-		return mv;
-	}
 	
 }

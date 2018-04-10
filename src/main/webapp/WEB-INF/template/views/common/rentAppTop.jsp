@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.">
-
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="<%=path%>/res/js/plugins/jqueryweiui/lib/weui.min.css">
 <link rel="stylesheet" href="<%=path%>/res/js/plugins/jqueryweiui/css/jquery-weui.min.css">
 <link rel="stylesheet" href="<%=path%>/res/js/plugins/jqueryweiui/demos.css">
