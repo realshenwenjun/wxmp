@@ -1,4 +1,4 @@
-package com.wxmp.rent.ctrl;
+package com.wxmp.gather.ctrl;
 
 import com.wxmp.wxcms.ctrl.BaseCtrl;
 import org.apache.log4j.LogManager;
@@ -13,23 +13,15 @@ import javax.servlet.http.HttpServletRequest;
  * @author : hermit
  */
 @Controller
-@RequestMapping("/rent/manager/user")
-public class ManagerUserCtrl extends BaseCtrl{
+@RequestMapping("/gather/auth")
+public class AuthCtrl extends BaseCtrl{
 	
-	private static Logger log = LogManager.getLogger(ManagerUserCtrl.class);
-	
+	private static Logger log = LogManager.getLogger(AuthCtrl.class);
 
-	
-	@RequestMapping(value = "/demo.html")
-	public ModelAndView sendmsg(HttpServletRequest request){
-		ModelAndView mv = new ModelAndView("rent/manager/user/weui");
-
-		return mv;
-	}
 
 	@RequestMapping(value = "/regist.html")
 	public ModelAndView regist(HttpServletRequest request){
-		ModelAndView mv = new ModelAndView("rent/manager/user/weui");
+		ModelAndView mv = new ModelAndView("gather/auth/regist");
 
 		return mv;
 	}

@@ -47,6 +47,7 @@
                 <property name="allowPatterns">
                     <list>
                         <value>/rent</value>
+                        <value>/gather</value>
                     </list>
                 </property>
             </bean>

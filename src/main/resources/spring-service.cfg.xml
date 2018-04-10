@@ -14,14 +14,14 @@
         -->
         <mvc:interceptors>
 			<mvc:interceptor>
-	        	<mvc:mapping path="/rent/*.html"/>
+	        	<mvc:mapping path="/gather/*.html"/>
 	        	<bean class="com.wxmp.wxapi.interceptor.WxOAuth2Interceptor">
-	        		<property name="includes">
-	        			<list> 
-							<value>/wxweb/sendmsg.html</value>
-							<value>/wxapi/oauthOpenid.html</value>
-						</list>
-	        		</property>
+	        		<!--<property name="includes">-->
+	        			<!--<list> -->
+							<!--<value>/wxweb/sendmsg.html</value>-->
+							<!--<value>/wxapi/oauthOpenid.html</value>-->
+						<!--</list>-->
+	        		<!--</property>-->
 	        	</bean>
 	        </mvc:interceptor>
 		</mvc:interceptors>

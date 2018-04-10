@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/rent/manager/user")
-public class ManagerUserCtrl extends BaseCtrl{
+public class AuthCtrl extends BaseCtrl{
 	
-	private static Logger log = LogManager.getLogger(ManagerUserCtrl.class);
+	private static Logger log = LogManager.getLogger(AuthCtrl.class);
 	
 
 	
