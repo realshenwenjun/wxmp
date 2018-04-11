@@ -1,5 +1,6 @@
 package com.wxmp.core.util;
 
+import com.wxmp.gather.domain.User;
 import com.wxmp.wxcms.domain.SysUser;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public final class SessionUtil {
 	private static HashMap<String, HttpSession> sessions;
 	private static HashMap<String, String> userSessionIds;
 	public static final String SESSION_USER = "session_user";
+	public static final String SESSION_GATHER_USER = "session_gather_user";
 	static {
 		sessions = new HashMap<String, HttpSession>();
 		userSessionIds = new HashMap<String, String>();
@@ -72,6 +74,16 @@ public final class SessionUtil {
 	 */
 	public static SysUser getUser() {
 		return (SysUser) session.getAttribute(SESSION_USER);
+	}
+
+	public static Integer getGatherUserId() {
+		Object id = session.getAttribute(SESSION_GATHER_USER);
+		if (id != null)
+			return (Integer) id;
+		return null;
+	}
+	public static void setGatherUserId(Integer id) {
+		session.setAttribute(SESSION_GATHER_USER,id);
 	}
 
 	/**

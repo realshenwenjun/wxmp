@@ -38,7 +38,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		String requestUrl = request.getRequestURI().replace(request.getContextPath(), "");
 		if (null != allowUrls && allowUrls.length >= 1)
 			for (String url : allowUrls) {
-				if (requestUrl.contains(".css") || requestUrl.contains(".js") || requestUrl.contains(".png") || requestUrl.contains(".jpg")||requestUrl.contains("/message") || requestUrl.equals(url)) {
+				if (requestUrl.contains(".css")|| requestUrl.contains(".ico") || requestUrl.contains(".js") || requestUrl.contains(".png") || requestUrl.contains(".jpg")||requestUrl.contains("/message") || requestUrl.equals(url)) {
 					return true;
 				}
 			}

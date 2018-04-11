@@ -1,5 +1,7 @@
 package com.wxmp.wxcms.ctrl;
 
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.annotation.Resource;
@@ -32,5 +34,14 @@ public class BaseCtrl {
     public void setAttribute(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
+    }
+
+    public JSON getJsonResponse(boolean success, int code, String msg, Object obj){
+        JSONObject j = new JSONObject();
+        j.put("success",success);
+        j.put("code",code);
+        j.put("msg",msg);
+        j.put("obj",obj);
+        return j;
     }
 }

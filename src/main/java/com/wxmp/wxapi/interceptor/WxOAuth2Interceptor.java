@@ -3,6 +3,11 @@ package com.wxmp.wxapi.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.wxmp.core.util.JSONUtil;
+import com.wxmp.core.util.SessionUtil;
+import com.wxmp.gather.domain.User;
+import com.wxmp.wxcms.domain.SysUser;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -34,61 +39,83 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String uri = request.getRequestURI();
 		
-		log.info("-------------------------------------preHandle-----<0>-------------------uri:"+uri);			
-		
-		boolean oauthFlag = false;//为方便展示的参数，开发者自行处理
-		for(String s : includes){
-			if(uri.contains(s)){//如果包含，就拦截
-				oauthFlag = true;
+		log.info("-------------------------------------preHandle-----<0>-------------------uri:"+uri);
+		boolean oauthFlag = false;//为方便展示的参数，开发者自行处理是否auth认证的
+
+		String ua = request.getHeader("user-agent").toLowerCase();
+		if (ua.indexOf("micromessenger") <= -1) {// 不是微信浏览器就不去获取openid了
+			oauthFlag = false;
+		}
+		if(oauthFlag){//如果需要oauth认证
+			String sessionid = request.getSession().getId();
+			String openid = WxMemoryCacheClient.getOpenid(sessionid);//先从缓存中获取openid
+			log.info("-------------------------------------preHandle-----<1>-------------------openid:"+openid);
+
+			if(StringUtils.isBlank(openid)){//没有，通过微信页面授权获取
+				String code = request.getParameter("code");
+				log.info("-------------------------------------preHandle-----<2-1>-------------------code:"+code);
+				if(!StringUtils.isBlank(code)){//如果request中包括code，则是微信回调
+					log.info("-------------------------------------preHandle-----<2-2>-------------------code:"+code);
+					try {
+						openid = WxApiClient.getOAuthOpenId(WxMemoryCacheClient.getSingleMpAccount(), code);
+						log.info("-------------------------------------preHandle-----<2-3>-------------------openid:"+openid);
+						if(!StringUtils.isBlank(openid)){
+							WxMemoryCacheClient.setOpenid(sessionid, openid);//缓存openid
+							return true;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else{//oauth获取code
+					MpAccount mpAccount = WxMemoryCacheClient.getSingleMpAccount();//获取缓存中的唯一账号
+					log.info("-------------------------------------preHandle-----<3-1>-------------------mpAccount:"+mpAccount.getAccount());
+					String redirectUrl = HttpUtil.getRequestFullUriNoContextPath(request);//请求code的回调url
+					if(!HttpUtil.existHttpPath(redirectUrl)){
+						//以上不存在就拼接全部url（包括context）
+						redirectUrl=HttpUtil.getRequestFullUri(request);
+					}
+					log.info("-------------------------------------preHandle-----<3-2>-------------------redirectUrl:"+redirectUrl);
+					String state = OAuth2RequestParamHelper.prepareState(request);
+					log.info("-------------------------------------preHandle-----<3-3>-------------------state:"+state);
+					String url = WxApi.getOAuthCodeUrl(mpAccount.getAppid(), redirectUrl, OAuthScope.Base.toString(), state);
+					log.info("-------------------------------------preHandle-----<3-4>-------------------url:"+url);
+					HttpUtil.redirectHttpUrl(request, response, url);
+					return false;
+				}
+			}
+			System.out.println("#### WxOAuth2Interceptor Session : openid = " + openid);
+		}
+		boolean loginFlag = true;//为方便展示的参数，开发者自行处理是否需要登录
+		for(String s : excludes){
+			if(uri.contains(s)){//如果包含，就不拦截
+				loginFlag = false;
 				break;
 			}
 		}
-		oauthFlag = true;
-		if(!oauthFlag){//如果不需要oauth认证
-			return true;
-		}
-		
-		String sessionid = request.getSession().getId();
-		String openid = WxMemoryCacheClient.getOpenid(sessionid);//先从缓存中获取openid
-		log.info("-------------------------------------preHandle-----<1>-------------------openid:"+openid);		
-		
-		if(StringUtils.isBlank(openid)){//没有，通过微信页面授权获取
-			String code = request.getParameter("code");
-			log.info("-------------------------------------preHandle-----<2-1>-------------------code:"+code);		
+		if (loginFlag){//如果需要登录
+			Integer userId = SessionUtil.getGatherUserId();
 
-			if(!StringUtils.isBlank(code)){//如果request中包括code，则是微信回调
-				log.info("-------------------------------------preHandle-----<2-2>-------------------code:"+code);		
-				try {
-					openid = WxApiClient.getOAuthOpenId(WxMemoryCacheClient.getSingleMpAccount(), code);
-					log.info("-------------------------------------preHandle-----<2-3>-------------------openid:"+openid);	
-					if(!StringUtils.isBlank(openid)){
-						WxMemoryCacheClient.setOpenid(sessionid, openid);//缓存openid
-						return true;
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}else{//oauth获取code
+			if(userId  == null){
+				if (uri.contains(".html")) {
+					String baseUri = request.getContextPath();
+					response.setStatus(response.SC_GATEWAY_TIMEOUT);
+					response.sendRedirect(baseUri + "/gather/auth/login.html");
+					return false;
+				}else {
+					response.setContentType("application/json;charset=utf-8");
+					response.setStatus(response.SC_GATEWAY_TIMEOUT);
+					JSONObject jsonObject = new JSONObject();
+					jsonObject.put("success",false);
+					jsonObject.put("code",response.SC_GATEWAY_TIMEOUT);
+					jsonObject.put("msg","用户未登录");
+					jsonObject.put("obj",null);
 
-				MpAccount mpAccount = WxMemoryCacheClient.getSingleMpAccount();//获取缓存中的唯一账号
-				log.info("-------------------------------------preHandle-----<3-1>-------------------mpAccount:"+mpAccount.getAccount());	
-				String redirectUrl = HttpUtil.getRequestFullUriNoContextPath(request);//请求code的回调url
-				if(!HttpUtil.existHttpPath(redirectUrl)){
-					//以上不存在就拼接全部url（包括context）
-					redirectUrl=HttpUtil.getRequestFullUri(request);
+					response.getWriter().write(jsonObject.toString());
+					return false;
 				}
-				log.info("-------------------------------------preHandle-----<3-2>-------------------redirectUrl:"+redirectUrl);
-				String state = OAuth2RequestParamHelper.prepareState(request);
-				log.info("-------------------------------------preHandle-----<3-3>-------------------state:"+state);
-				String url = WxApi.getOAuthCodeUrl(mpAccount.getAppid(), redirectUrl, OAuthScope.Base.toString(), state);
-				log.info("-------------------------------------preHandle-----<3-4>-------------------url:"+url);	
-				HttpUtil.redirectHttpUrl(request, response, url);
-				return false;
 			}
-		}else{
-			System.out.println("#### WxOAuth2Interceptor Session : openid = " + openid);
-			return true;
-		}
+		}else return true;
+
 		HttpUtil.redirectUrl(request, response, "/error/101.html");
 		return false;
 	}
