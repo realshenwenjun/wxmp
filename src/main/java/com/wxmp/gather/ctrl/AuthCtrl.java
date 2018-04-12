@@ -1,6 +1,9 @@
 package com.wxmp.gather.ctrl;
 
+import com.wxmp.core.util.CacheUtils;
 import com.wxmp.core.util.JSONUtil;
+import com.wxmp.core.util.SessionUtil;
+import com.wxmp.core.util.WebUtil;
 import com.wxmp.gather.domain.User;
 import com.wxmp.wxcms.ctrl.BaseCtrl;
 import net.sf.json.JSON;
@@ -24,11 +27,19 @@ public class AuthCtrl extends BaseCtrl{
 	
 	private static Logger log = LogManager.getLogger(AuthCtrl.class);
 
+	static String VERIFICATION_CODE_START = "verification_code_start";
 
 	@RequestMapping(value = "/regist.html")
 	public ModelAndView registHtml(HttpServletRequest request){
 		ModelAndView mv = new ModelAndView("gather/auth/regist");
+		Object verificationCodeStart = CacheUtils.get(VERIFICATION_CODE_START + WebUtil.getRemoteAddr(request));
+		if (verificationCodeStart != null) {
+			int i = (int) ((System.currentTimeMillis() - (Long)verificationCodeStart)*1/1000);
+			if (i < 60){
+				mv.addObject("verificationCodeStart", i);
+			}
 
+		}
 		return mv;
 	}
 
@@ -42,7 +53,8 @@ public class AuthCtrl extends BaseCtrl{
 	@RequestMapping(value = "/send/sms")
 	@ResponseBody
 	public JSON sendSms(HttpServletRequest request, String userPhone){
-		log.info(">>>>>>>>>>>>>>>>> : " + userPhone);
+		log.info(">>>>>>>>>>>>>>>>> : " + WebUtil.getRemoteAddr(request));
+		CacheUtils.put(VERIFICATION_CODE_START + WebUtil.getRemoteAddr(request), System.currentTimeMillis());
 		return getJsonResponse(true,0,"成功",null);
 	}
 	

@@ -21,13 +21,13 @@
             <input class="weui-input" id="userPhone" name="userPhone" type="tel" maxlength="11" placeholder="请输入手机号">
         </div>
         <div class="weui-cell__ft">
-            <button class="weui-vcode-btn" id="verificationCode">获取验证码</button>
+            <button class="weui-vcode-btn" id="verificationCode" start="${verificationCodeStart}" <c:choose><c:when test="${verificationCodeStart < 60}">style="color: grey" ></c:when><c:otherwise>>获取验证码</c:otherwise></c:choose></button>
         </div>
     </div>
 </div>
 
 <div class="weui-cells weui-cells_form">
-    <div class="weui-cell">
+    <div class="weui-cell ">
         <div class="weui-cell__hd"><label class="weui-label">验证码</label></div>
         <div class="weui-cell__bd">
             <input class="weui-input" type="text" name="verificationCode"  placeholder="请输入验证码">
@@ -39,6 +39,14 @@
         <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
         <div class="weui-cell__bd">
             <input class="weui-input" type="password" id="password"  placeholder="请输入密码">
+        </div>
+    </div>
+</div>
+<div class="weui-cells weui-cells_form">
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">确认密码</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="password" id="password2"  placeholder="再次输入确认密码">
         </div>
     </div>
 </div>
