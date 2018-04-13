@@ -3,10 +3,9 @@ package com.wxmp.wxapi.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.wxmp.core.util.JSONUtil;
 import com.wxmp.core.util.SessionUtil;
 import com.wxmp.gather.domain.User;
-import com.wxmp.wxcms.domain.SysUser;
+import com.wxmp.gather.service.AuthService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
@@ -33,6 +32,8 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 	 */
 	private String[] excludes;//不需要拦截的
 	private String[] includes;//需要拦截的
+
+	private AuthService authService;
 	
 	
 	@Override
@@ -40,12 +41,14 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 		String uri = request.getRequestURI();
 		
 		log.info("-------------------------------------preHandle-----<0>-------------------uri:"+uri);
-		boolean oauthFlag = false;//为方便展示的参数，开发者自行处理是否auth认证的
+		boolean oauthFlag = true;//为方便展示的参数，开发者自行处理是否auth认证的
 
 		String ua = request.getHeader("user-agent").toLowerCase();
 		if (ua.indexOf("micromessenger") <= -1) {// 不是微信浏览器就不去获取openid了
 			oauthFlag = false;
 		}
+		if (request.getServerName().contains("localhost") || request.getServerName().contains("127.0.0.1"))
+			oauthFlag = false;
 		if(oauthFlag){//如果需要oauth认证
 			String sessionid = request.getSession().getId();
 			String openid = WxMemoryCacheClient.getOpenid(sessionid);//先从缓存中获取openid
@@ -61,7 +64,7 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 						log.info("-------------------------------------preHandle-----<2-3>-------------------openid:"+openid);
 						if(!StringUtils.isBlank(openid)){
 							WxMemoryCacheClient.setOpenid(sessionid, openid);//缓存openid
-							return true;
+//							return true;
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -83,7 +86,15 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 					return false;
 				}
 			}
-			System.out.println("#### WxOAuth2Interceptor Session : openid = " + openid);
+			log.info("#### WxOAuth2Interceptor Session : openid = " + openid);
+			String userId = SessionUtil.getGatherUserId();
+
+			if(userId  == null){ // openid自动登录
+				User u = authService.getUserByWxOpenId(openid);
+				if (u != null){
+					SessionUtil.setGatherUserId(u.getId());
+				}
+			}
 		}
 		boolean loginFlag = true;//为方便展示的参数，开发者自行处理是否需要登录
 		for(String s : excludes){
@@ -93,11 +104,17 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 			}
 		}
 		if (loginFlag){//如果需要登录
-			Integer userId = SessionUtil.getGatherUserId();
 
+			String userId = SessionUtil.getGatherUserId();
 			if(userId  == null){
 				if (uri.contains(".html")) {
+					String url = request.getRequestURI();
+					String queryurl = request.getQueryString();
+					if(null != queryurl){
+						url += "?" + queryurl;
+					}
 					String baseUri = request.getContextPath();
+					SessionUtil.session.setAttribute(SessionUtil.REDIRECT_URL,baseUri + url);
 					response.setStatus(response.SC_GATEWAY_TIMEOUT);
 					response.sendRedirect(baseUri + "/gather/auth/login.html");
 					return false;
@@ -114,10 +131,10 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 					return false;
 				}
 			}
+
 		}else return true;
 
-		HttpUtil.redirectUrl(request, response, "/error/101.html");
-		return false;
+		return true;
 	}
 	
 	
@@ -129,14 +146,13 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 		this.excludes = excludes;
 	}
 
-	public String[] getIncludes() {
-		return includes;
-	}
 
 	public void setIncludes(String[] includes) {
 		this.includes = includes;
 	}
-	
-	
+
+	public void setAuthService(AuthService authService) {
+		this.authService = authService;
+	}
 }
 

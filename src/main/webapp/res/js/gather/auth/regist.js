@@ -70,7 +70,7 @@ $("#showTooltips").on("click",function(){
                         window.location.href = "login.html";
                     });
                 }else{
-                    $.alert(data.msg, data.code);
+                    $.toast(data.msg, "text");
                 }
             }
         });
@@ -96,7 +96,7 @@ $("#verificationCode").unbind().on("click",function(){
 
                     timer(60);
                 }else{
-                    $.alert(data.msg, data.code);
+                    $.toast(data.msg, "text");
                 }
             }
         });

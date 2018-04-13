@@ -57,24 +57,27 @@
       </span>
 </label>
 
-<%--<div class="weui-cells weui-cells_form">
-    <div class="weui-cell weui-cell_warn">
-        <div class="weui-cell__hd"><label for="" class="weui-label">卡号</label></div>
-        <div class="weui-cell__bd">
-            <input class="weui-input" type="number" pattern="[0-9]*" value="weui input error" placeholder="请输入卡号">
-        </div>
-        <div class="weui-cell__ft">
-            <i class="weui-icon-warn"></i>
-        </div>
-    </div>
-</div>--%>
-
-
-
 
 <div class="weui-btn-area">
-    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+    <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">注册</a>
 </div>
+<div style="display:inline-flex;">
+    <a href="login.html">
+        <label class="weui-agree">
+              <span class="weui-agree__text">
+                手机号登录
+              </span>
+        </label>
+    </a>
+    <a href="forgetpassword.html">
+        <label class="weui-agree" >
+              <span class="weui-agree__text">
+                找回密码
+              </span>
+        </label>
+    </a>
+</div>
+
 <jsp:include page="/WEB-INF/template/views/common/weuiBottom.jsp"></jsp:include>
 <script src="<%=path%>/res/js/gather/auth/regist.js"></script>
 </body>

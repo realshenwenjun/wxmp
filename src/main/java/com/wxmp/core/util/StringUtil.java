@@ -31,6 +31,11 @@ public class StringUtil {
 	public static final String EMPTY_STRING = "";
 	private static char chars[] = "0123456789abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 	private static final char IntChars[] = "1234567890".toCharArray();
+	public static boolean isEmpty(Object val){
+		if (val == null || EMPTY_STRING.equals(val))
+			return true;
+		return false;
+	}
 	/**
 	 * 获得int
 	 * @param val

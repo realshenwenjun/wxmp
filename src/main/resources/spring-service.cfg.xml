@@ -24,10 +24,16 @@
 	        		</property>
 					<property name="excludes">
 						<list>
+							<value>/gather/auth/send/sms</value>
 							<value>/gather/auth/regist.html</value>
 							<value>/gather/auth/regist</value>
-							<value>/gather/auth/send/sms</value>
+							<value>/gather/auth/login.html</value>
+							<value>/gather/auth/login</value>
+							<value>/gather/auth/forgetpassword.html</value>
+
 						</list>
+					</property>
+					<property name="authService" ref="authService">
 					</property>
 	        	</bean>
 	        </mvc:interceptor>
