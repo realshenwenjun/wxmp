@@ -22,7 +22,7 @@ $("#showTooltips").on("click",function(){
             success:function(data){
                 if(data.success){
                     $.toast("登录成功", function() {
-                        window.location.href = data.obj;
+                        window.location.href = isEmpty(data.obj) ? "login.html" : data.obj;
                     });
                 }else{
                     $.toast(data.msg, "text");

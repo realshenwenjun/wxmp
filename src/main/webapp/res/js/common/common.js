@@ -10,7 +10,13 @@ function ajax(param){
         data:param.data,
         success:param.success,
         error:function(jqXHR, textStatus, errorThrown){
-            $.alert("", jqXHR.responseText);
+            try{
+                var r = $.parseJSON(jqXHR.responseText);
+                $.alert("", r.msg);
+            }catch(e){
+                $.alert("", jqXHR.responseText);
+            }
+
         }
     });
 }

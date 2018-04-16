@@ -52,6 +52,13 @@ public class AuthCtrl extends BaseCtrl{
 		return mv;
 	}
 
+	@RequestMapping(value = "/forgetpassword.html")
+	public ModelAndView forgetPassword(HttpServletRequest request){
+		ModelAndView mv = new ModelAndView("gather/auth/forgetpassword");
+
+		return mv;
+	}
+
 
 	@RequestMapping(value = "/regist")
 	@ResponseBody
@@ -95,6 +102,21 @@ public class AuthCtrl extends BaseCtrl{
 		CacheUtils.put(VERIFICATION_CODE_START + WebUtil.getRemoteAddr(request), System.currentTimeMillis());
 		String code = "1234";
 		CacheUtils.put(VERIFICATION_CODE + WebUtil.getRemoteAddr(request), code);
+		return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
+	}
+
+	@RequestMapping(value = "/changepassword")
+	@ResponseBody
+	public JSON changePassword(HttpServletRequest request, User user, String verificationCode) throws Exception{
+		String code = (String) CacheUtils.get(VERIFICATION_CODE + WebUtil.getRemoteAddr(request));
+		if (!verificationCode.equals(code))
+			return getJsonResponse(false, GatherMessage.VERIFICATION_CODE_WRONG,GatherMessage.VERIFICATION_CODE_WRONG_NAME,null);
+		User u = authService.getUserByPhone(user.getUserPhone());
+		if (u == null)
+			return getJsonResponse(false, GatherMessage.USER_NOT_EXIST,GatherMessage.USER_NOT_EXIST_NAME,null);
+		user.setId(u.getId());
+		user.setPassword(MD5Util.getMD5Code(user.getPassword()));
+		authService.updateUser(user);
 		return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
 	}
 }

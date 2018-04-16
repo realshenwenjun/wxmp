@@ -30,6 +30,7 @@
 							<value>/gather/auth/login.html</value>
 							<value>/gather/auth/login</value>
 							<value>/gather/auth/forgetpassword.html</value>
+							<value>/gather/auth/changepassword</value>
 
 						</list>
 					</property>
