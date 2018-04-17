@@ -18,4 +18,6 @@ public interface UserMapper {
     User selectByWxOpenId(String wxOpenId);
 
     User selectByUserPhone(String userPhone);
+
+    int updateByWxOpenIdSelective(User record);
 }

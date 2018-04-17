@@ -7,6 +7,7 @@ import com.wxmp.gather.service.AuthService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * Created by shenwenjun on 2018/4/13.
@@ -21,7 +22,15 @@ public class AuthServiceImpl implements AuthService{
     public User getUserByWxOpenId(String wxOpenId) {
         if (StringUtil.isEmpty(wxOpenId))
             return null;
-        return userMapper.selectByWxOpenId(wxOpenId);
+        User u = userMapper.selectByWxOpenId(wxOpenId);
+        if (u == null){ // 没有就创建
+            u = new User();
+            u.setCreateTime(new Date());
+            u.setId(StringUtil.getRandomLengthString(32));
+            u.setWxOpenid(wxOpenId);
+            userMapper.insertSelective(u);
+        }
+        return u;
     }
 
     @Override
@@ -39,5 +48,10 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public void addUser(User user) {
         userMapper.insertSelective(user);
+    }
+
+    @Override
+    public void updateUserByOpenId(User user) {
+        userMapper.updateByWxOpenIdSelective(user);
     }
 }

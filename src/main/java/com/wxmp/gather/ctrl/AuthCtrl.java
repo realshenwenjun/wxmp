@@ -59,7 +59,6 @@ public class AuthCtrl extends BaseCtrl{
 		return mv;
 	}
 
-
 	@RequestMapping(value = "/regist")
 	@ResponseBody
 	public JSON regist(HttpServletRequest request, User user, String verificationCode) throws Exception{
@@ -69,10 +68,18 @@ public class AuthCtrl extends BaseCtrl{
 		User exist = authService.getUserByPhone(user.getUserPhone());
 		if (exist != null)
 			return getJsonResponse(false, GatherMessage.USER_PHONE_EXIST,GatherMessage.USER_PHONE_EXIST_NAME,null);
-		user.setId(StringUtil.getRandomLengthString(32));
-		user.setPassword(MD5Util.getMD5Code(user.getPassword()));
-		user.setCreateTime(new Date());
-		authService.addUser(user);
+		String sessionid = request.getSession().getId();
+		String openid = WxMemoryCacheClient.getOpenid(sessionid);//先从缓存中获取openid
+		if (openid == null) {
+			user.setId(StringUtil.getRandomLengthString(32));
+			user.setPassword(MD5Util.getMD5Code(user.getPassword()));
+			user.setCreateTime(new Date());
+			authService.addUser(user);
+		}else {
+			user.setPassword(MD5Util.getMD5Code(user.getPassword()));
+			user.setWxOpenid(openid);
+			authService.updateUserByOpenId(user);
+		}
 		return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
 	}
 	@RequestMapping(value = "/login")

@@ -137,4 +137,25 @@
     from t_wxgather_user
     where user_phone = #{userPhone,jdbcType=VARCHAR}
   </select>
+  <update id="updateByWxOpenIdSelective" parameterType="com.wxmp.gather.domain.User" >
+    update t_wxgather_user
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null" >
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where wx_openid = #{wxOpenid,jdbcType=VARCHAR}
+  </update>
 </mapper>
