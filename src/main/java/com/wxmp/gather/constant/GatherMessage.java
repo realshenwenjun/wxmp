@@ -18,4 +18,6 @@ public class GatherMessage {
     public static final String USER_NOT_EXIST_NAME = "用户不存在";
     public static final int UPLOAD_FAIL = 6;
     public static final String UPLOAD_FAIL_NAME = "上传失败，为选择任何文件";
+    public static final int SOURCE_END_LIMIT = 7;
+    public static final String SOURCE_END_LIMIT_NAME = "最多添加20条房源";
 }

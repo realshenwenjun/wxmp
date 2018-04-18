@@ -1,6 +1,7 @@
 package com.wxmp.gather.service.impl;
 
 import com.wxmp.core.util.StringUtil;
+import com.wxmp.gather.constant.GatherMessage;
 import com.wxmp.gather.domain.RentSource;
 import com.wxmp.gather.domain.RentSourceUser;
 import com.wxmp.gather.mapper.RentSourceMapper;
@@ -37,7 +38,10 @@ public class SourceServiceImpl implements SourceService{
     }
 
     @Override
-    public void addSource(RentSource source, String userId) {
+    public void addSource(RentSource source, String userId) throws Exception {
+        List<RentSourceUser> rsu = rentSourceUserMapper.selectByManagerId(userId);
+        if (rsu.size() == 20)
+            throw new Exception(String.valueOf(GatherMessage.SOURCE_END_LIMIT));
         rentSourceMapper.insertSelective(source);
         RentSourceUser rs = new RentSourceUser();
         rs.setSourceId(source.getId());

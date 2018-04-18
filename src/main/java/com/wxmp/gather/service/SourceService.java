@@ -10,5 +10,5 @@ import java.util.List;
 public interface SourceService {
     public List<RentSource> getManagerSource(String userId, String name);
 
-    public void addSource(RentSource source,String userId);
+    public void addSource(RentSource source,String userId) throws Exception;
 }

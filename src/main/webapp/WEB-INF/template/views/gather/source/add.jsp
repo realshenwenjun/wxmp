@@ -41,8 +41,8 @@
 <div class="weui-cells weui-cells_form">
     <div class="weui-cell">
         <div class="weui-cell__bd">
-            <textarea class="weui-textarea" name="desc" id="desc" placeholder="请输入描述" rows="3"></textarea>
-            <div class="weui-textarea-counter"><span>0</span>/250</div>
+            <textarea class="weui-textarea" name="desc" id="desc" maxlength="250" placeholder="请输入描述" rows="3"></textarea>
+            <div class="weui-textarea-counter"><span id="descCount">0</span>/250</div>
         </div>
     </div>
 </div>

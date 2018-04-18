@@ -61,8 +61,34 @@ function upload(file,id){
     }
 
 }
+$("#desc").unbind().on("keyup",function(){
+    var desc = $("#desc").val()
+    desc = desc.replace(/[\r\n]/g,"")
 
+    $("#descCount").text(desc.length)
+})
 $("#showTooltips").unbind().on("click",function(){
+    var name = $("#name").val()
+    if(isEmpty(name)){
+        $.toast("名称不能为空", "text");
+        return;
+    }
+    var address = $("#address").val()
+    if(isEmpty(address)){
+        $.toast("地址不能为空", "text");
+        return;
+    }
+    var houseCount = $("#houseCount").val()
+    if(isEmpty(houseCount)){
+        $.toast("房屋数量不能为空", "text");
+        return;
+    }
+    var desc = $("#desc").val()
+    if(isEmpty(desc)){
+        $.toast("描述不能为空", "text");
+        return;
+    }
+
     var imgs = $("#uploaderFiles").find("li.weui-uploader__file")
     var picUrl = "";
     var picsUrl = "";
@@ -78,11 +104,11 @@ $("#showTooltips").unbind().on("click",function(){
         type:'POST',
         async: false,
         dataType:'json',
-        data:{name:$("#name").val(),address:$("#address").val(),houseCount:$("#houseCount").val(),desc:$("#desc").val(),picUrl:picUrl,picsUrl:picsUrl},
+        data:{name:name,address:address,houseCount:houseCount,desc:desc,picUrl:picUrl,picsUrl:picsUrl},
         success:function(data){
             if(data.success){
                 $.toast("保存成功", function() {
-
+                    window.location.href = path + '/gather/source/source.html';
                 });
             }else{
                 $.toast(data.msg, "text");

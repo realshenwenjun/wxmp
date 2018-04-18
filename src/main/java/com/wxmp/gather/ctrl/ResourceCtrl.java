@@ -52,7 +52,7 @@ public class ResourceCtrl extends BaseCtrl{
 			return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,"http://" + request.getServerName() + ":" + request.getServerPort() +"/" +request.getContextPath()+"res/images/" + filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
-			if ("1".equals(e.getMessage())) {
+			if (String.valueOf(GatherMessage.UPLOAD_FAIL).equals(e.getMessage())) {
 				return getJsonResponse(false, GatherMessage.UPLOAD_FAIL, GatherMessage.UPLOAD_FAIL_NAME, null);
 			}
 			return getJsonResponse(false, GatherMessage.FAIL, GatherMessage.FAIL_NAME, null);
@@ -62,7 +62,7 @@ public class ResourceCtrl extends BaseCtrl{
 	public String upload(String path, MultipartFile file)
 			throws Exception {
 		if (file == null || file.getSize() == 0) {
-			throw new Exception("1");
+			throw new Exception(String.valueOf(GatherMessage.UPLOAD_FAIL));
 		}
 		String fileExtName = file.getOriginalFilename();
 		fileExtName = fileExtName.substring(fileExtName.lastIndexOf(".") + 1);

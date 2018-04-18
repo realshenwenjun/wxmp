@@ -1,9 +1,7 @@
 package com.wxmp.gather.ctrl;
 
-import com.wxmp.core.util.CacheUtils;
 import com.wxmp.core.util.SessionUtil;
 import com.wxmp.core.util.StringUtil;
-import com.wxmp.core.util.WebUtil;
 import com.wxmp.gather.constant.GatherMessage;
 import com.wxmp.gather.domain.RentSource;
 import com.wxmp.gather.service.SourceService;
@@ -53,7 +51,13 @@ public class SourceCtrl extends BaseCtrl{
 	public JSON add(HttpServletRequest request, RentSource source) throws Exception{
 		source.setId(StringUtil.getRandomLengthString(32));
 		source.setCreateTime(new Date());
-		sourceService.addSource(source, SessionUtil.getGatherUserId());
+		try {
+			sourceService.addSource(source, SessionUtil.getGatherUserId());
+		}catch (Exception e){
+			if (String.valueOf(GatherMessage.SOURCE_END_LIMIT).equals(e.getMessage()))
+				return getJsonResponse(false, GatherMessage.SOURCE_END_LIMIT,GatherMessage.SOURCE_END_LIMIT_NAME,null);
+		}
+
 		return getJsonResponse(true, GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
 	}
 }
