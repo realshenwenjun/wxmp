@@ -23,13 +23,6 @@ public class AuthServiceImpl implements AuthService{
         if (StringUtil.isEmpty(wxOpenId))
             return null;
         User u = userMapper.selectByWxOpenId(wxOpenId);
-        if (u == null){ // 没有就创建
-            u = new User();
-            u.setCreateTime(new Date());
-            u.setId(StringUtil.getRandomLengthString(32));
-            u.setWxOpenid(wxOpenId);
-            userMapper.insertSelective(u);
-        }
         return u;
     }
 

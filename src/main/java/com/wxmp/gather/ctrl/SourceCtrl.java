@@ -1,9 +1,11 @@
 package com.wxmp.gather.ctrl;
 
+import com.wxmp.core.util.QrcodeUtil;
 import com.wxmp.core.util.SessionUtil;
 import com.wxmp.core.util.StringUtil;
 import com.wxmp.gather.constant.GatherMessage;
 import com.wxmp.gather.domain.RentSource;
+import com.wxmp.gather.domain.RentSourceUser;
 import com.wxmp.gather.service.SourceService;
 import com.wxmp.wxcms.ctrl.BaseCtrl;
 import net.sf.json.JSON;
@@ -27,6 +29,8 @@ import java.util.List;
 public class SourceCtrl extends BaseCtrl{
 	
 	private static Logger log = LogManager.getLogger(SourceCtrl.class);
+
+	private String osName = System.getProperties().getProperty("os.name");
 
 	@Autowired
 	SourceService sourceService;
@@ -52,12 +56,58 @@ public class SourceCtrl extends BaseCtrl{
 		source.setId(StringUtil.getRandomLengthString(32));
 		source.setCreateTime(new Date());
 		try {
+			String realPath = osName.toLowerCase()
+					.contains("linux") ? getPathByLinux(request)
+					: getPathByWindows(request);// 文件的硬盘真实路径
+			String fileName = StringUtil.getRandomLengthString(16) + ".png";
+			String path = realPath + fileName;
+			QrcodeUtil.createEncode("source="+source.getId()+"&type=2",path);
+			source.setQrcode("http://" + request.getServerName() + ":" + request.getServerPort() +request.getContextPath()+"/res/upload/" + fileName);
+
 			sourceService.addSource(source, SessionUtil.getGatherUserId());
 		}catch (Exception e){
+			e.printStackTrace();
 			if (String.valueOf(GatherMessage.SOURCE_END_LIMIT).equals(e.getMessage()))
 				return getJsonResponse(false, GatherMessage.SOURCE_END_LIMIT,GatherMessage.SOURCE_END_LIMIT_NAME,null);
 		}
 
+		return getJsonResponse(true, GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
+	}
+
+	private String getPathByLinux(HttpServletRequest request) {
+		String realContextPath = request.getServletContext().getRealPath("/");
+		if (realContextPath.endsWith("/"))
+			return realContextPath + "res/upload/";
+		else {
+			return realContextPath + "/res/upload/";
+		}
+	}
+
+	private String getPathByWindows(HttpServletRequest request) {
+		String realContextPath = request.getServletContext().getRealPath("/");
+		if (realContextPath.endsWith("\\"))
+			return realContextPath + "res\\upload\\";
+		else {
+			return realContextPath + "\\res\\upload\\";
+		}
+	}
+
+	@RequestMapping(value = "/detail.html")
+	public ModelAndView detailHtml(HttpServletRequest request, String id){
+		ModelAndView mv = new ModelAndView("gather/source/detail");
+		RentSource source = sourceService.getSource(id);
+		request.setAttribute("source", source);
+		return mv;
+	}
+
+	@RequestMapping(value = "/del")
+	@ResponseBody
+	public JSON del(HttpServletRequest request, String id) throws Exception{
+		List<RentSourceUser> sourceUsers = sourceService.getSourceUser(id);
+		if (sourceUsers != null && sourceUsers.size() > 0){
+			return getJsonResponse(false, GatherMessage.SOURCE_HAS_USER,GatherMessage.SOURCE_HAS_USER_NAME,null);
+		}
+		sourceService.delSource(id);
 		return getJsonResponse(true, GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,null);
 	}
 }

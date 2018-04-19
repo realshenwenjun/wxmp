@@ -114,7 +114,7 @@ public class WxOAuth2Interceptor extends HandlerInterceptorAdapter {
 						url += "?" + queryurl;
 					}
 					String baseUri = request.getContextPath();
-					SessionUtil.session.setAttribute(SessionUtil.REDIRECT_URL,baseUri + url);
+					SessionUtil.session.setAttribute(SessionUtil.REDIRECT_URL,url);
 					response.setStatus(response.SC_GATEWAY_TIMEOUT);
 					response.sendRedirect(baseUri + "/gather/auth/login.html");
 					return false;

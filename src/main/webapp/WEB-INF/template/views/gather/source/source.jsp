@@ -8,7 +8,7 @@
 <div class="page__pd">
     <div class="weui-search-bar weui-search-bar_focusing" id="searchBar">
         <a href="add.html" class="weui-search-bar__cancel-btn" id="" style="margin-left: 0;margin-right: 10px;" id="addButton">添加</a>
-        <form class="weui-search-bar__form" action="/gather/source/source.html" method="post" id="searchForm">
+        <form class="weui-search-bar__form" action="<%=path%>/gather/source/source.html" method="post" id="searchForm">
             <div class="weui-search-bar__box" style="height: auto;">
                 <i class="weui-icon-search"></i>
                 <input type="search" class="weui-search-bar__input" name="name" id="searchInput" value="${form.name}" placeholder="搜索" required="">
@@ -24,7 +24,7 @@
     <div class="weui-panel weui-panel_access">
         <div class="weui-panel__bd">
             <c:forEach items="${sources}" var="source" varStatus="index">
-                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
+                <a href="detail.html?id=${source.id}" class="weui-media-box weui-media-box_appmsg">
                     <div class="weui-media-box__hd">
                         <img class="weui-media-box__thumb" src="${source.picUrl}" alt="" height="50">
                         <span class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</span>

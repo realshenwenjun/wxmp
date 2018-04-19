@@ -19,6 +19,8 @@ public class RentSource {
 
     private String desc;
 
+    private String qrcode;
+
     public String getId() {
         return id;
     }
@@ -83,6 +85,14 @@ public class RentSource {
         this.desc = desc == null ? null : desc.trim();
     }
 
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode == null ? null : qrcode.trim();
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -96,13 +106,14 @@ public class RentSource {
         }
         RentSource other = (RentSource) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
-            && (this.getHouseCount() == null ? other.getHouseCount() == null : this.getHouseCount().equals(other.getHouseCount()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getPicsUrl() == null ? other.getPicsUrl() == null : this.getPicsUrl().equals(other.getPicsUrl()))
-            && (this.getPicUrl() == null ? other.getPicUrl() == null : this.getPicUrl().equals(other.getPicUrl()))
-            && (this.getDesc() == null ? other.getDesc() == null : this.getDesc().equals(other.getDesc()));
+                && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
+                && (this.getHouseCount() == null ? other.getHouseCount() == null : this.getHouseCount().equals(other.getHouseCount()))
+                && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
+                && (this.getPicsUrl() == null ? other.getPicsUrl() == null : this.getPicsUrl().equals(other.getPicsUrl()))
+                && (this.getPicUrl() == null ? other.getPicUrl() == null : this.getPicUrl().equals(other.getPicUrl()))
+                && (this.getDesc() == null ? other.getDesc() == null : this.getDesc().equals(other.getDesc()))
+                && (this.getQrcode() == null ? other.getQrcode() == null : this.getQrcode().equals(other.getQrcode()));
     }
 
     @Override
@@ -117,6 +128,7 @@ public class RentSource {
         result = prime * result + ((getPicsUrl() == null) ? 0 : getPicsUrl().hashCode());
         result = prime * result + ((getPicUrl() == null) ? 0 : getPicUrl().hashCode());
         result = prime * result + ((getDesc() == null) ? 0 : getDesc().hashCode());
+        result = prime * result + ((getQrcode() == null) ? 0 : getQrcode().hashCode());
         return result;
     }
 

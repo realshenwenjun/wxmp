@@ -88,13 +88,18 @@ public class AuthCtrl extends BaseCtrl{
 		User u = authService.getUserByPhone(user.getUserPhone());
 		if (u ==null || !u.getPassword().equals(MD5Util.getMD5Code(user.getPassword())))
 			return getJsonResponse(false, GatherMessage.PASSWORD_WRONG,GatherMessage.PASSWORD_WRONG_NAME,null);
-		User update = new User();
-		update.setId(u.getId());
 		String sessionid = request.getSession().getId();
 		String openid = WxMemoryCacheClient.getOpenid(sessionid);
-		if (!StringUtil.isEmpty(openid)){
-			update.setWxOpenid(openid);
-			authService.updateUser(update);// 更新openid
+		if (openid != null) {
+			if (!openid.equals(u.getWxOpenid()))
+				return getJsonResponse(false, GatherMessage.WEIXIN_HAS_BIND,GatherMessage.WEIXIN_HAS_BIND_NAME,null);
+		}else {
+			User update = new User();
+			update.setId(u.getId());
+			if (!StringUtil.isEmpty(openid)) {
+				update.setWxOpenid(openid);
+				authService.updateUser(update);// 更新openid
+			}
 		}
 		Object redirectUrl = SessionUtil.session.getAttribute(SessionUtil.REDIRECT_URL);
 		SessionUtil.session.removeAttribute(SessionUtil.REDIRECT_URL);

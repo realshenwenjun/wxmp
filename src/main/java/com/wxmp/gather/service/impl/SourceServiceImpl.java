@@ -42,11 +42,29 @@ public class SourceServiceImpl implements SourceService{
         List<RentSourceUser> rsu = rentSourceUserMapper.selectByManagerId(userId);
         if (rsu.size() == 20)
             throw new Exception(String.valueOf(GatherMessage.SOURCE_END_LIMIT));
+        // 生成二维码
+
         rentSourceMapper.insertSelective(source);
         RentSourceUser rs = new RentSourceUser();
         rs.setSourceId(source.getId());
         rs.setUserId(userId);
         rs.setType(2);
         rentSourceUserMapper.insertSelective(rs);
+    }
+
+    @Override
+    public RentSource getSource(String sourceId) {
+        return rentSourceMapper.selectByPrimaryKey(sourceId);
+    }
+
+    @Override
+    public void delSource(String sourceId) {
+        rentSourceMapper.deleteByPrimaryKey(sourceId);
+        rentSourceUserMapper.deleteBySourceId(sourceId);
+    }
+
+    @Override
+    public List<RentSourceUser> getSourceUser(String sourceId) {
+        return rentSourceUserMapper.selectUserBySourceId(sourceId);
     }
 }

@@ -85,4 +85,14 @@
     from t_wxgather_source_user
     where user_id = #{userId,jdbcType=VARCHAR} AND `type` = 2
   </select>
+  <select id="selectUserBySourceId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_wxgather_source_user
+    where source_id = #{sourceId,jdbcType=VARCHAR} AND `type` = 1
+  </select>
+  <delete id="deleteBySourceId" parameterType="java.lang.String" >
+    delete from t_wxgather_source_user
+    where source_id = #{sourceId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

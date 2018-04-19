@@ -49,7 +49,7 @@ public class ResourceCtrl extends BaseCtrl{
 					: getPathByWindows(request);// 文件的硬盘真实路径
 			String filePath = upload(realPath, file);
 
-			return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,"http://" + request.getServerName() + ":" + request.getServerPort() +"/" +request.getContextPath()+"res/images/" + filePath);
+			return getJsonResponse(true,GatherMessage.SUCCESS,GatherMessage.SUCCESS_MSG,"http://" + request.getServerName() + ":" + request.getServerPort() +request.getContextPath()+"/res/upload/" + filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (String.valueOf(GatherMessage.UPLOAD_FAIL).equals(e.getMessage())) {
@@ -78,18 +78,18 @@ public class ResourceCtrl extends BaseCtrl{
 	private String getPathByLinux(HttpServletRequest request) {
 		String realContextPath = request.getServletContext().getRealPath("/");
 		if (realContextPath.endsWith("/"))
-			return realContextPath + "res/images/";
+			return realContextPath + "res/upload/";
 		else {
-			return realContextPath + "/res/images/";
+			return realContextPath + "/res/upload/";
 		}
 	}
 
 	private String getPathByWindows(HttpServletRequest request) {
 		String realContextPath = request.getServletContext().getRealPath("/");
 		if (realContextPath.endsWith("\\"))
-			return realContextPath + "res\\images\\";
+			return realContextPath + "res\\upload\\";
 		else {
-			return realContextPath + "\\res\\images\\";
+			return realContextPath + "\\res\\upload\\";
 		}
 	}
 }

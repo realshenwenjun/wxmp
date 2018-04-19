@@ -13,6 +13,7 @@ function ajax(param){
             try{
                 var r = $.parseJSON(jqXHR.responseText);
                 $.alert("", r.msg);
+                $.hideLoading();
             }catch(e){
                 $.alert("", jqXHR.responseText);
             }

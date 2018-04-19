@@ -20,4 +20,8 @@ public class GatherMessage {
     public static final String UPLOAD_FAIL_NAME = "上传失败，为选择任何文件";
     public static final int SOURCE_END_LIMIT = 7;
     public static final String SOURCE_END_LIMIT_NAME = "最多添加20条房源";
+    public static final int SOURCE_HAS_USER = 8;
+    public static final String SOURCE_HAS_USER_NAME = "房屋内还有租户，不能删除";
+    public static final int WEIXIN_HAS_BIND = 9;
+    public static final String WEIXIN_HAS_BIND_NAME = "当前账号已绑定微信号";
 }

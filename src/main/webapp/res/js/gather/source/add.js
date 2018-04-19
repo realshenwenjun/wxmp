@@ -5,7 +5,7 @@
 $("#uploaderInput").unbind().on("change",function(){
     var id = new Date().getTime();
     $("#uploaderFiles").append(
-        '<li class="weui-uploader__file weui-uploader__file_status" id="'+id+'_pic" style="background-image:url(/res/js/plugins/jqueryweiui/images/pic_160.png)">'+
+        '<li class="weui-uploader__file weui-uploader__file_status" id="'+id+'_pic" style="background-image:url('+path+'/res/js/plugins/jqueryweiui/images/pic_160.png)">'+
         '<span class="weui-badge" onclick="remove('+id+')" style="position: absolute;top: -.4em;right: 0em;">x</span>'+
         '<div class="weui-uploader__file-content" id="'+id+'">0%</div>'+
         '</li>');
@@ -31,7 +31,7 @@ function upload(file,id){
     xhr.upload.addEventListener("progress", uploadProgress, false);
 
     //发送文件和表单自定义参数
-    xhr.open("POST", "/gather/resource/file",true);
+    xhr.open("POST", path+"/gather/resource/file",true);
     xhr.send(fd);
     function uploadProgress(evt){
         if (evt.lengthComputable) {
@@ -99,6 +99,7 @@ $("#showTooltips").unbind().on("click",function(){
         if(i == 0)
             picUrl = p
     })
+    $.showLoading();
     ajax({
         url:path + '/gather/source/add',
         type:'POST',
@@ -106,6 +107,7 @@ $("#showTooltips").unbind().on("click",function(){
         dataType:'json',
         data:{name:name,address:address,houseCount:houseCount,desc:desc,picUrl:picUrl,picsUrl:picsUrl},
         success:function(data){
+            $.hideLoading();
             if(data.success){
                 $.toast("保存成功", function() {
                     window.location.href = path + '/gather/source/source.html';

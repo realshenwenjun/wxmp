@@ -18,4 +18,8 @@ public interface RentSourceUserMapper {
     int updateByPrimaryKey(RentSourceUser record);
 
     List<RentSourceUser> selectByManagerId(String userId);
+
+    List<RentSourceUser> selectUserBySourceId(String sourceId);
+
+    void deleteBySourceId(String sourceId);
 }
