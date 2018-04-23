@@ -61,7 +61,7 @@ public class SourceCtrl extends BaseCtrl{
 					: getPathByWindows(request);// 文件的硬盘真实路径
 			String fileName = StringUtil.getRandomLengthString(16) + ".png";
 			String path = realPath + fileName;
-			QrcodeUtil.createEncode("source="+source.getId()+"&type=2",path);
+			QrcodeUtil.createEncode("http://" + request.getServerName() + ":" + request.getServerPort() +request.getContextPath()+"/gather/buy/confirm.html?source="+source.getId()+"&type=2",path);
 			source.setQrcode("http://" + request.getServerName() + ":" + request.getServerPort() +request.getContextPath()+"/res/upload/" + fileName);
 
 			sourceService.addSource(source, SessionUtil.getGatherUserId());
